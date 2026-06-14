@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Пианино</title>
+  <style>
+    @font-face {
+      font-family: "alk-life-webfont";
+      src: url("https://base44.app/api/apps/69cbcd44d3da2a5cef013f5e/files/mp/public/69cbcd44d3da2a5cef013f5e/a6e81106f_siteFont_font_mqeaa78f.bin") format("truetype");
+      font-weight: 400;
+      font-style: normal;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%; height: 100%;
+      background: #E6E6E6;
+      overflow: hidden;
+      font-family: "alk-life-webfont", sans-serif;
+    }
+    canvas { display: block; background: transparent; }
+    .tool-canvas-area {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div class="tool-canvas-area">
+    <canvas id="canvas"></canvas>
+  </div>
+  <script>
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    var config = {
+      rootNote:    'Do',
+      scaleType:   'Major',
+      octaves:     2,
+      showLabels:  true,
+      activeColor: '#DC0000',
+      scaleColor:  '#FFFFFF'
+    };
+
+    var NOTE_NAMES = ['Do','Do#','Re','Re#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'];
+
+    var SCALES = {
+      'Major':           [0,2,4,5,7,9,11],
+      'Natural Minor':   [0,2,3,5,7,8,10],
+      'Harmonic Minor':  [0,2,3,5,7,8,11],
+      'Melodic Minor':   [0,2,3,5,7,9,11],
+      'Dorian':          [0,2,3,5,7,9,10],
+      'Phrygian':        [0,1,3,5,7,8,10],
+      'Lydian':          [0,2,4,6,7,9,11],
+      'Mixolydian':      [0,2,4,5,7,9,10],
+      'Locrian':         [0,1,3,5,6,8,10],
+      'Pentatonic Major':[0,2,4,7,9],
+      'Pentatonic Minor':[0,3,5,7,10],
+      'Blues':           [0,3,5,6,7,10],
+      'Whole Tone':      [0,2,4,6,8,10],
+      'Chromatic':       [0,1,2,3,4,5,6,7,8,9,10,11]
+    };
+
+    var CHORD_INTERVALS = [
+      { name: ' Maj',  intervals: [0,4,7] },
+      { name: ' min',  intervals: [0,3,7] },
+      { name: ' dim',  intervals: [0,3,6] },
+      { name: ' aug',  intervals: [0,4,8] },
+      { name: ' sus2', intervals: [0,2,7] },
+      { name: ' sus4', intervals: [0,5,7] },
+      { name: ' Maj7', intervals: [0,4,7,11] },
+      { name: ' m7',   intervals: [0,3,7,10] },
+      { name: ' 7',    intervals: [0,4,7,10] },
+      { name: ' m7b5', intervals: [0,3,6,10] },
+      { name: ' dim7', intervals: [0,3,6,9] },
+      { name: ' Maj9', intervals: [0,4,7,11,14] },
+      { name: ' m9',   intervals: [0,3,7,10,14] },
+      { name: ' 9',    intervals: [0,4,7,10,14] },
+      { name: ' add9', intervals: [0,4,7,14] },
+      { name: ' 6',    intervals: [0,4,7,9] },
+      { name: ' m6',   intervals: [0,3,7,9] }
+    ];
+
+    var INTERVAL_NAMES = {
+      0:'Прима', 1:'б.2', 2:'м.2', 3:'м.3', 4:'б.3',
+      5:'ч.4', 6:'ум.5', 7:'ч.5', 8:'ув.5',
+      9:'б.6', 10:'м.7', 11:'б.7', 14:'б.9'
+    };
+
+    function getNoteName(midi) { return NOTE_NAMES[midi % 12]; }
+
+    function detectChord(activeSet) {
+      if (activeSet.size === 0) return null;
+      if (activeSet.size === 1) return { name: getNoteName(Array.from(activeSet)[0]), intervals: [0] };
+      var notes = Array.from(activeSet).sort(function(a,b){ return a-b; });
+      if (activeSet.size === 2) {
+        var interval = (notes[1] - notes[0]) % 12;
+        if (interval === 7) return { name: getNoteName(notes[0]) + '5', intervals: [0,7] };
+        return { name: getNoteName(notes[0]) + '+' + getNoteName(notes[1]), intervals: [0,interval] };
+      }
+      for (var i = 0; i < notes.length; i++) {
+        var root = notes[i];
+        var rootName = getNoteName(root);
+        var intsMod = Array.from(new Set(notes.map(function(n){ return (n-root+120)%12; }))).sort(function(a,b){return a-b;});
+        for (var c = 0; c < CHORD_INTERVALS.length; c++) {
+          var chord = CHORD_INTERVALS[c];
+          var cMod = Array.from(new Set(chord.intervals.map(function(x){ return x%12; }))).sort(function(a,b){return a-b;});
+          if (intsMod.length === cMod.length && intsMod.every(function(v,idx){ return v===cMod[idx]; })) {
+            var name = rootName + chord.name;
+            if (notes[0] !== root) name += '/' + getNoteName(notes[0]);
+            return { name: name, intervals: chord.intervals };
+          }
+        }
+      }
+      return { name: notes.map(getNoteName).join(', '), intervals: [] };
+    }
+
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var activeOscillators = new Map();
+
+    function midiToFreq(midi) { return 440 * Math.pow(2, (midi-69)/12); }
+
+    function playNote(midi) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (activeOscillators.has(midi)) return;
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = midiToFreq(midi);
+      gain.gain.setValueAtTime(0, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + 2.0);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      activeOscillators.set(midi, { osc: osc, gain: gain });
+    }
+
+    function stopNote(midi) {
+      var s = activeOscillators.get(midi);
+      if (s) {
+        s.gain.gain.cancelScheduledValues(audioCtx.currentTime);
+        s.gain.gain.setValueAtTime(s.gain.gain.value, audioCtx.currentTime);
+        s.gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+        s.osc.stop(audioCtx.currentTime + 0.1);
+        activeOscillators.delete(midi);
+      }
+    }
+
+    var heldNotes = new Set();
+    var sustainedNotes = new Set();
+    var sustainPedal = false;
+
+    function addNote(midi) {
+      if (!heldNotes.has(midi)) { heldNotes.add(midi); playNote(midi); }
+    }
+    function removeNote(midi) {
+      if (heldNotes.has(midi)) {
+        heldNotes.delete(midi);
+        if (!sustainPedal) stopNote(midi);
+        else sustainedNotes.add(midi);
+      }
+    }
+    function getActiveNotes() { return new Set([...heldNotes, ...sustainedNotes]); }
+
+    if (navigator.requestMIDIAccess) {
+      navigator.requestMIDIAccess().then(function(access) {
+        access.inputs.forEach(function(input) {
+          input.onmidimessage = function(msg) {
+            var cmd = msg.data[0], note = msg.data[1], vel = msg.data[2] || 0;
+            if (cmd === 144 && vel > 0) addNote(note);
+            else if (cmd === 128 || (cmd === 144 && vel === 0)) removeNote(note);
+            else if (cmd === 176 && note === 64) {
+              sustainPedal = vel > 63;
+              if (!sustainPedal) {
+                sustainedNotes.forEach(function(n) { if (!heldNotes.has(n)) stopNote(n); });
+                sustainedNotes.clear();
+              }
+            }
+          };
+        });
+      }).catch(function(){});
+    }
+
+    var START_MIDI = 48;
+    var BLACK_NOTES = new Set([1,3,6,8,10]);
+
+    function getKeys(octaves) {
+      var total = octaves * 12;
+      var whites = [], blacks = [];
+      var wIdx = 0;
+      for (var i = 0; i < total; i++) {
+        var midi = START_MIDI + i;
+        var noteInOct = midi % 12;
+        if (!BLACK_NOTES.has(noteInOct)) {
+          whites.push({ midi: midi, isBlack: false, wIdx: wIdx });
+          wIdx++;
+        }
+      }
+      var curWhite = 0;
+      for (var i = 0; i < total; i++) {
+        var midi = START_MIDI + i;
+        var noteInOct = midi % 12;
+        if (BLACK_NOTES.has(noteInOct)) {
+          blacks.push({ midi: midi, isBlack: true, wIdx: curWhite - 1 });
+        } else {
+          curWhite++;
+        }
+      }
+      return { keys: whites.concat(blacks), totalWhite: wIdx };
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x+r, y);
+      ctx.lineTo(x+w-r, y);
+      ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+      ctx.lineTo(x+w, y+h-r);
+      ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+      ctx.lineTo(x+r, y+h);
+      ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+      ctx.lineTo(x, y+r);
+      ctx.quadraticCurveTo(x, y, x+r, y);
+      ctx.closePath();
+    }
+
+    function getLayout() {
+      var data = getKeys(config.octaves);
+      var totalWhite = data.totalWhite;
+      var padding = 20;
+      var keyboardH = canvas.height - padding * 2;
+      var whiteKeyH = keyboardH / totalWhite;
+      var whiteKeyW = Math.min(canvas.width * 0.55, 180);
+      var blackKeyW = whiteKeyW * 0.6;
+      var blackKeyH = whiteKeyH * 0.6;
+      return {
+        keys: data.keys,
+        totalWhite: totalWhite,
+        whiteKeyW: whiteKeyW,
+        whiteKeyH: whiteKeyH,
+        blackKeyW: blackKeyW,
+        blackKeyH: blackKeyH,
+        startX: padding,
+        startY: padding
+      };
+    }
+
+    function getMidiFromPos(x, y) {
+      var L = getLayout();
+      var blacks = L.keys.filter(function(k){ return k.isBlack; });
+      for (var i = 0; i < blacks.length; i++) {
+        var k = blacks[i];
+        var ky = L.startY + k.wIdx * L.whiteKeyH + L.whiteKeyH - L.blackKeyH / 2;
+        if (x >= L.startX && x <= L.startX + L.blackKeyW &&
+            y >= ky && y <= ky + L.blackKeyH) return k.midi;
+      }
+      if (x >= L.startX && x <= L.startX + L.whiteKeyW) {
+        var wIdx = Math.floor((y - L.startY) / L.whiteKeyH);
+        var whites = L.keys.filter(function(k){ return !k.isBlack; });
+        var wk = whites.find(function(k){ return k.wIdx === wIdx; });
+        return wk ? wk.midi : null;
+      }
+      return null;
+    }
+
+    var activeMouseKey = null;
+
+    function getPos(e) {
+      var rect = canvas.getBoundingClientRect();
+      var scaleX = canvas.width / rect.width;
+      var scaleY = canvas.height / rect.height;
+      var touch = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]);
+      var cx = touch ? touch.clientX : e.clientX;
+      var cy = touch ? touch.clientY : e.clientY;
+      return { x: (cx - rect.left) * scaleX, y: (cy - rect.top) * scaleY };
+    }
+
+    function handleDown(e) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      var pos = getPos(e);
+      var midi = getMidiFromPos(pos.x, pos.y);
+      if (midi !== null) { activeMouseKey = midi; addNote(midi); }
+    }
+    function handleMove(e) {
+      if (activeMouseKey === null) return;
+      var pos = getPos(e);
+      var midi = getMidiFromPos(pos.x, pos.y);
+      if (midi !== activeMouseKey) {
+        removeNote(activeMouseKey);
+        if (midi !== null) { addNote(midi); activeMouseKey = midi; }
+        else activeMouseKey = null;
+      }
+    }
+    function handleUp() {
+      if (activeMouseKey !== null) { removeNote(activeMouseKey); activeMouseKey = null; }
+    }
+
+    canvas.addEventListener('mousedown', handleDown);
+    canvas.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup', handleUp);
+    canvas.addEventListener('touchstart', function(e){ e.preventDefault(); handleDown(e); }, { passive: false });
+    canvas.addEventListener('touchmove',  function(e){ e.preventDefault(); handleMove(e); }, { passive: false });
+    window.addEventListener('touchend', handleUp);
+
+    var QWERTY_MAP = {
+      'q':48,'z':49,'s':50,'e':51,'d':52,'f':53,'t':54,
+      'g':55,'y':56,'h':57,'u':58,'j':59,'k':60,'o':61,
+      'l':62,'p':63,'m':64
+    };
+    window.addEventListener('keydown', function(e) {
+      if (e.repeat) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      var midi = QWERTY_MAP[e.key.toLowerCase()];
+      if (midi) addNote(midi);
+    });
+    window.addEventListener('keyup', function(e) {
+      var midi = QWERTY_MAP[e.key.toLowerCase()];
+      if (midi) removeNote(midi);
+    });
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      var L = getLayout();
+      var active = getActiveNotes();
+      var activeColor = config.activeColor;
+      var rootMidi = NOTE_NAMES.indexOf(config.rootNote);
+      var scaleInts = SCALES[config.scaleType] || SCALES['Major'];
+      var scaleMod12 = new Set(scaleInts.map(function(i){ return (rootMidi+i)%12; }));
+      var FONT = '"alk-life-webfont", sans-serif';
+
+      L.keys.filter(function(k){ return !k.isBlack; }).forEach(function(k) {
+        var ky = L.startY + k.wIdx * L.whiteKeyH;
+        var isActive = active.has(k.midi);
+        var inScale = scaleMod12.has(k.midi % 12);
+        ctx.fillStyle = isActive ? activeColor : (inScale ? '#ffcccc' : '#ffffff');
+        roundRect(ctx, L.startX, ky, L.whiteKeyW, L.whiteKeyH - 2, 4);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(0,0,0,0.12)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        if (config.showLabels) {
+          ctx.fillStyle = isActive ? '#fff' : (inScale ? '#D00000' : '#999');
+          ctx.font = '11px ' + FONT;
+          ctx.textAlign = 'left';
+          ctx.fillText(getNoteName(k.midi), L.startX + L.whiteKeyW - 28, ky + L.whiteKeyH / 2 + 4);
+        }
+      });
+
+      L.keys.filter(function(k){ return k.isBlack; }).forEach(function(k) {
+        var ky = L.startY + k.wIdx * L.whiteKeyH + L.whiteKeyH - L.blackKeyH / 2;
+        var isActive = active.has(k.midi);
+        var inScale = scaleMod12.has(k.midi % 12);
+        ctx.fillStyle = isActive ? activeColor : (inScale ? '#990000' : '#1a1a1a');
+        roundRect(ctx, L.startX, ky, L.blackKeyW, L.blackKeyH, 3);
+        ctx.fill();
+        if (config.showLabels) {
+          ctx.fillStyle = '#fff';
+          ctx.font = '9px ' + FONT;
+          ctx.textAlign = 'left';
+          ctx.fillText(getNoteName(k.midi), L.startX + L.blackKeyW - 24, ky + L.blackKeyH / 2 + 3);
+        }
+      });
+
+      var chordData = detectChord(active);
+      var infoX = L.startX + L.whiteKeyW + 20;
+      var infoW = canvas.width - infoX - 20;
+
+      if (infoW > 60) {
+        if (chordData && chordData.name) {
+          ctx.fillStyle = activeColor;
+          ctx.font = 'bold 36px ' + FONT;
+          ctx.textAlign = 'center';
+          var cx = infoX + infoW / 2;
+          ctx.fillText(chordData.name, cx, canvas.height / 2 - 30);
+          if (chordData.intervals && chordData.intervals.length > 0) {
+            ctx.fillStyle = '#888';
+            ctx.font = '12px ' + FONT;
+            var iNames = chordData.intervals.map(function(i){ return INTERVAL_NAMES[i] || i; }).join(' • ');
+            var words = iNames.split(' • ');
+            var line = '';
+            var lineY = canvas.height / 2 + 10;
+            words.forEach(function(w) {
+              var test = line + (line ? ' • ' : '') + w;
+              if (ctx.measureText(test).width > infoW - 10 && line) {
+                ctx.fillText(line, cx, lineY);
+                line = w;
+                lineY += 18;
+              } else {
+                line = test;
+              }
+            });
+            if (line) ctx.fillText(line, cx, lineY);
+          }
+        } else {
+          ctx.fillStyle = '#aaa';
+          ctx.font = '13px ' + FONT;
+          ctx.textAlign = 'center';
+          ctx.fillText('Нажмите клавишу', infoX + infoW/2, canvas.height/2);
+        }
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    requestAnimationFrame(draw);
+  </script>
+</body>
+</html>
