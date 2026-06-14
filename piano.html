@@ -1,495 +1,416 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2685.3">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Пианино</title>
+  <style>
+    @font-face {
+      font-family: "alk-life-webfont";
+      src: url("https://base44.app/api/apps/69cbcd44d3da2a5cef013f5e/files/mp/public/69cbcd44d3da2a5cef013f5e/a6e81106f_siteFont_font_mqeaa78f.bin") format("truetype");
+      font-weight: 400;
+      font-style: normal;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%; height: 100%;
+      background: #E6E6E6;
+      overflow: hidden;
+      font-family: "alk-life-webfont", sans-serif;
+    }
+    canvas { display: block; background: transparent; }
+    .tool-canvas-area {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
   </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="ru"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Пианино&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>@font-face {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-family: "alk-life-webfont";</p>
-<p class="p1"><span class="Apple-converted-space">      </span>src: url("https://base44.app/api/apps/69cbcd44d3da2a5cef013f5e/files/mp/public/69cbcd44d3da2a5cef013f5e/a6e81106f_siteFont_font_mqeaa78f.bin") format("truetype");</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-weight: 400;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-style: normal;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>html, body {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>height: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: #E6E6E6;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>overflow: hidden;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>font-family: "alk-life-webfont", sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>canvas {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: block;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>background: transparent;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>.tool-canvas-area {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>height: 100%;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>justify-content: center;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>position: relative;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>overflow: hidden;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="tool-canvas-area"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;canvas id="canvas"&gt;&lt;/canvas&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>var canvas = document.getElementById('canvas');</p>
-<p class="p1"><span class="Apple-converted-space">    </span>var ctx = canvas.getContext('2d');</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function resizeCanvas() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>canvas.width<span class="Apple-converted-space">  </span>= window.innerWidth;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>canvas.height = window.innerHeight;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>window.addEventListener('resize', resizeCanvas);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>resizeCanvas();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// ====== Настройки ======</p>
-<p class="p1"><span class="Apple-converted-space">    </span>var config = {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>rootNote:<span class="Apple-converted-space">    </span>'Do',</p>
-<p class="p1"><span class="Apple-converted-space">      </span>scaleType: <span class="Apple-converted-space">  </span>'Major',</p>
-<p class="p1"><span class="Apple-converted-space">      </span>octaves: <span class="Apple-converted-space">    </span>2,</p>
-<p class="p1"><span class="Apple-converted-space">      </span>showLabels:<span class="Apple-converted-space">  </span>true,</p>
-<p class="p1"><span class="Apple-converted-space">      </span>activeColor: '#DC0000',</p>
-<p class="p1"><span class="Apple-converted-space">      </span>scaleColor:<span class="Apple-converted-space">  </span>'#FFFFFF'</p>
-<p class="p1"><span class="Apple-converted-space">    </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// ====== Ноты и гаммы ======</p>
-<p class="p1"><span class="Apple-converted-space">    </span>var NOTE_NAMES = ['Do','Do#','Re','Re#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>var SCALES = {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'Major': <span class="Apple-converted-space">          </span>[0,2,4,5,7,9,11],</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'Natural Minor': <span class="Apple-converted-space">  </span>[0,2,3,5,7,8,10],</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'Harmonic Minor':<span class="Apple-converted-space">  </span>[0,2,3,5,7,8,11],</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'Melodic Minor': <span class="Apple-converted-space">  </span>[0,2,3,5,7,9,11],</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'Dorian':<span class="Apple-converted-space">          </span>[0,2,3,5,7,9,10],</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'Phrygian':<span class="Apple-converted-space">        </span>[0,1,3,5,7,8,10],</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'Lydian':<span class="Apple-converted-space">          </span>[0,2,4,6,7,9,11],</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'Mixolydian':<span class="Apple-converted-space">      </span>[0,2,4,5,7,9,10],</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'Locrian': <span class="Apple-converted-space">        </span>[0,1,3,5,6,8,10],</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'Pentatonic Major':[0,2,4,7,9],</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'Pentatonic Minor':[0,3,5,7,10],</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'Blues': <span class="Apple-converted-space">          </span>[0,3,5,6,7,10],</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'Whole Tone':<span class="Apple-converted-space">      </span>[0,2,4,6,8,10],</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'Chromatic': <span class="Apple-converted-space">      </span>[0,1,2,3,4,5,6,7,8,9,10,11]</p>
-<p class="p1"><span class="Apple-converted-space">    </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>var CHORD_INTERVALS = [</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' Maj',<span class="Apple-converted-space">    </span>intervals: [0,4,7] },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' min',<span class="Apple-converted-space">    </span>intervals: [0,3,7] },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' dim',<span class="Apple-converted-space">    </span>intervals: [0,3,6] },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' aug',<span class="Apple-converted-space">    </span>intervals: [0,4,8] },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' sus2', <span class="Apple-converted-space">  </span>intervals: [0,2,7] },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' sus4', <span class="Apple-converted-space">  </span>intervals: [0,5,7] },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' Maj7', <span class="Apple-converted-space">  </span>intervals: [0,4,7,11] },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' m7', <span class="Apple-converted-space">    </span>intervals: [0,3,7,10] },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' 7',<span class="Apple-converted-space">      </span>intervals: [0,4,7,10] },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' m7b5', <span class="Apple-converted-space">  </span>intervals: [0,3,6,10] },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' dim7', <span class="Apple-converted-space">  </span>intervals: [0,3,6,9] },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' Maj9', <span class="Apple-converted-space">  </span>intervals: [0,4,7,11,14] },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' m9', <span class="Apple-converted-space">    </span>intervals: [0,3,7,10,14] },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' 9',<span class="Apple-converted-space">      </span>intervals: [0,4,7,10,14] },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' add9', <span class="Apple-converted-space">  </span>intervals: [0,4,7,14] },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' 6',<span class="Apple-converted-space">      </span>intervals: [0,4,7,9] },</p>
-<p class="p1"><span class="Apple-converted-space">      </span>{ name: ' m6', <span class="Apple-converted-space">    </span>intervals: [0,3,7,9] }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>];</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>var INTERVAL_NAMES = {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>0:'Прима', 1:'б.2', 2:'м.2', 3:'м.3', 4:'б.3',</p>
-<p class="p1"><span class="Apple-converted-space">      </span>5:'ч.4', 6:'ум.5', 7:'ч.5', 8:'ув.5',</p>
-<p class="p1"><span class="Apple-converted-space">      </span>9:'б.6', 10:'м.7', 11:'б.7', 14:'б.9'</p>
-<p class="p1"><span class="Apple-converted-space">    </span>};</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function getNoteName(midi) { return NOTE_NAMES[midi % 12]; }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function detectChord(activeSet) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (activeSet.size === 0) return null;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (activeSet.size === 1) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>return { name: getNoteName(Array.from(activeSet)[0]), intervals: [0] };</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>var notes = Array.from(activeSet).sort(function(a,b){ return a-b; });</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (activeSet.size === 2) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var interval = (notes[1] - notes[0]) % 12;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (interval === 7) return { name: getNoteName(notes[0]) + '5', intervals: [0,7] };</p>
-<p class="p1"><span class="Apple-converted-space">        </span>return { name: getNoteName(notes[0]) + '+' + getNoteName(notes[1]), intervals: [0,interval] };</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>for (var i = 0; i &lt; notes.length; i++) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var root = notes[i];</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var rootName = getNoteName(root);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var intsMod = Array.from(new Set(notes.map(function(n){ return (n-root+120)%12; }))).sort(function(a,b){return a-b;});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>for (var c = 0; c &lt; CHORD_INTERVALS.length; c++) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>var chord = CHORD_INTERVALS[c];</p>
-<p class="p1"><span class="Apple-converted-space">          </span>var cMod = Array.from(new Set(chord.intervals.map(function(x){ return x%12; }))).sort(function(a,b){return a-b;});</p>
-<p class="p1"><span class="Apple-converted-space">          </span>if (intsMod.length === cMod.length &amp;&amp; intsMod.every(function(v,idx){ return v===cMod[idx]; })) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>var name = rootName + chord.name;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (notes[0] !== root) name += '/' + getNoteName(notes[0]);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>return { name: name, intervals: chord.intervals };</p>
-<p class="p1"><span class="Apple-converted-space">          </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>return { name: notes.map(getNoteName).join(', '), intervals: [] };</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// ====== Аудио ======</p>
-<p class="p1"><span class="Apple-converted-space">    </span>var audioCtx = new (window.AudioContext || window.webkitAudioContext)();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>var activeOscillators = new Map();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function midiToFreq(midi) { return 440 * Math.pow(2, (midi-69)/12); }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function playNote(midi) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (audioCtx.state === 'suspended') audioCtx.resume();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (activeOscillators.has(midi)) return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var osc = audioCtx.createOscillator();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var gain = audioCtx.createGain();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>osc.type = 'triangle';</p>
-<p class="p1"><span class="Apple-converted-space">      </span>osc.frequency.value = midiToFreq(midi);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gain.gain.setValueAtTime(0, audioCtx.currentTime);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.015);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gain.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + 2.0);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>osc.connect(gain);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>gain.connect(audioCtx.destination);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>osc.start();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>activeOscillators.set(midi, { osc: osc, gain: gain });</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function stopNote(midi) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var s = activeOscillators.get(midi);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (s) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>s.gain.gain.cancelScheduledValues(audioCtx.currentTime);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>s.gain.gain.setValueAtTime(s.gain.gain.value, audioCtx.currentTime);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>s.gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>s.osc.stop(audioCtx.currentTime + 0.1);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>activeOscillators.delete(midi);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>var heldNotes = new Set();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>var sustainedNotes = new Set();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>var sustainPedal = false;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function addNote(midi) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (!heldNotes.has(midi)) { heldNotes.add(midi); playNote(midi); }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function removeNote(midi) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (heldNotes.has(midi)) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>heldNotes.delete(midi);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (!sustainPedal) stopNote(midi);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>else sustainedNotes.add(midi);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function getActiveNotes() { return new Set([...heldNotes, ...sustainedNotes]); }</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// ====== MIDI ======</p>
-<p class="p1"><span class="Apple-converted-space">    </span>if (navigator.requestMIDIAccess) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>navigator.requestMIDIAccess().then(function(access) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>access.inputs.forEach(function(input) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>input.onmidimessage = function(msg) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>var cmd = msg.data[0], note = msg.data[1], vel = msg.data[2] || 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (cmd === 144 &amp;&amp; vel &gt; 0) addNote(note);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>else if (cmd === 128 || (cmd === 144 &amp;&amp; vel === 0)) removeNote(note);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>else if (cmd === 176 &amp;&amp; note === 64) {</p>
-<p class="p1"><span class="Apple-converted-space">              </span>sustainPedal = vel &gt; 63;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>if (!sustainPedal) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>sustainedNotes.forEach(function(n) { if (!heldNotes.has(n)) stopNote(n); });</p>
-<p class="p1"><span class="Apple-converted-space">                </span>sustainedNotes.clear();</p>
-<p class="p1"><span class="Apple-converted-space">              </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">          </span>};</p>
-<p class="p1"><span class="Apple-converted-space">        </span>});</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}).catch(function(){});</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// ====== Клавиши ======</p>
-<p class="p1"><span class="Apple-converted-space">    </span>var START_MIDI = 48;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>var BLACK_NOTES = new Set([1,3,6,8,10]);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function getKeys(octaves) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var total = octaves * 12;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var whites = [], blacks = [];</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var wIdx = 0;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>for (var i = 0; i &lt; total; i++) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var midi = START_MIDI + i;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var noteInOct = midi % 12;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (!BLACK_NOTES.has(noteInOct)) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>whites.push({ midi: midi, isBlack: false, wIdx: wIdx });</p>
-<p class="p1"><span class="Apple-converted-space">          </span>wIdx++;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>var curWhite = 0;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>for (var i = 0; i &lt; total; i++) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var midi = START_MIDI + i;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var noteInOct = midi % 12;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (BLACK_NOTES.has(noteInOct)) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>blacks.push({ midi: midi, isBlack: true, wIdx: curWhite - 1 });</p>
-<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>curWhite++;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>return { keys: whites.concat(blacks), totalWhite: wIdx };</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function roundRect(ctx, x, y, w, h, r) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.beginPath();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.moveTo(x+r, y);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.lineTo(x+w-r, y);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.quadraticCurveTo(x+w, y, x+w, y+r);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.lineTo(x+w, y+h-r);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.lineTo(x+r, y+h);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.quadraticCurveTo(x, y+h, x, y+h-r);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.lineTo(x, y+r);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.quadraticCurveTo(x, y, x+r, y);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.closePath();</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// ====== Размеры пианино — вертикальное ======</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function getLayout() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var octaves = config.octaves;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var data = getKeys(octaves);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var totalWhite = data.totalWhite;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Пианино занимает всю высоту, клавиши вертикально</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var padding = 20;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var keyboardH = canvas.height - padding * 2;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var whiteKeyH = keyboardH / totalWhite;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var whiteKeyW = Math.min(canvas.width * 0.55, 180);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var blackKeyW = whiteKeyW * 0.6;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var blackKeyH = whiteKeyH * 0.6;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>var startX = padding;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var startY = padding;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>return {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>keys: data.keys,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>totalWhite: totalWhite,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>whiteKeyW: whiteKeyW,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>whiteKeyH: whiteKeyH,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>blackKeyW: blackKeyW,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>blackKeyH: blackKeyH,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>startX: startX,</p>
-<p class="p1"><span class="Apple-converted-space">        </span>startY: startY</p>
-<p class="p1"><span class="Apple-converted-space">      </span>};</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function getMidiFromPos(x, y) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var L = getLayout();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Сначала проверяем чёрные (они поверх)</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var blacks = L.keys.filter(function(k){ return k.isBlack; });</p>
-<p class="p1"><span class="Apple-converted-space">      </span>for (var i = 0; i &lt; blacks.length; i++) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var k = blacks[i];</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var ky = L.startY + k.wIdx * L.whiteKeyH + L.whiteKeyH - L.blackKeyH / 2;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var kx = L.startX;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (x &gt;= kx &amp;&amp; x &lt;= kx + L.blackKeyW &amp;&amp;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>y &gt;= ky &amp;&amp; y &lt;= ky + L.blackKeyH) return k.midi;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Белые</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (x &gt;= L.startX &amp;&amp; x &lt;= L.startX + L.whiteKeyW) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var wIdx = Math.floor((y - L.startY) / L.whiteKeyH);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var whites = L.keys.filter(function(k){ return !k.isBlack; });</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var wk = whites.find(function(k){ return k.wIdx === wIdx; });</p>
-<p class="p1"><span class="Apple-converted-space">        </span>return wk ? wk.midi : null;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>return null;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>var activeMouseKey = null;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function handleDown(e) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (audioCtx.state === 'suspended') audioCtx.resume();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var pos = getPos(e);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var midi = getMidiFromPos(pos.x, pos.y);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (midi !== null) { activeMouseKey = midi; addNote(midi); }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function handleMove(e) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (activeMouseKey === null) return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var pos = getPos(e);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var midi = getMidiFromPos(pos.x, pos.y);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (midi !== activeMouseKey) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>removeNote(activeMouseKey);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (midi !== null) { addNote(midi); activeMouseKey = midi; }</p>
-<p class="p1"><span class="Apple-converted-space">        </span>else activeMouseKey = null;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function handleUp() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (activeMouseKey !== null) { removeNote(activeMouseKey); activeMouseKey = null; }</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>function getPos(e) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var rect = canvas.getBoundingClientRect();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var scaleX = canvas.width / rect.width;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var scaleY = canvas.height / rect.height;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var touch = (e.touches &amp;&amp; e.touches[0]) || (e.changedTouches &amp;&amp; e.changedTouches[0]);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var cx = touch ? touch.clientX : e.clientX;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var cy = touch ? touch.clientY : e.clientY;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>return { x: (cx - rect.left) * scaleX, y: (cy - rect.top) * scaleY };</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>canvas.addEventListener('mousedown', handleDown);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>canvas.addEventListener('mousemove', handleMove);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>window.addEventListener('mouseup', handleUp);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>canvas.addEventListener('touchstart', function(e){ e.preventDefault(); handleDown(e); }, { passive: false });</p>
-<p class="p1"><span class="Apple-converted-space">    </span>canvas.addEventListener('touchmove',<span class="Apple-converted-space">  </span>function(e){ e.preventDefault(); handleMove(e); }, { passive: false });</p>
-<p class="p1"><span class="Apple-converted-space">    </span>window.addEventListener('touchend', handleUp);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Клавиатура</p>
-<p class="p1"><span class="Apple-converted-space">    </span>var QWERTY_MAP = {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'q':48,'z':49,'s':50,'e':51,'d':52,'f':53,'t':54,</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'g':55,'y':56,'h':57,'u':58,'j':59,'k':60,'o':61,</p>
-<p class="p1"><span class="Apple-converted-space">      </span>'l':62,'p':63,'m':64</p>
-<p class="p1"><span class="Apple-converted-space">    </span>};</p>
-<p class="p1"><span class="Apple-converted-space">    </span>window.addEventListener('keydown', function(e) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (e.repeat) return;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (audioCtx.state === 'suspended') audioCtx.resume();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var midi = QWERTY_MAP[e.key.toLowerCase()];</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (midi) addNote(midi);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p1"><span class="Apple-converted-space">    </span>window.addEventListener('keyup', function(e) {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var midi = QWERTY_MAP[e.key.toLowerCase()];</p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (midi) removeNote(midi);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// ====== Рисование ======</p>
-<p class="p1"><span class="Apple-converted-space">    </span>function draw() {</p>
-<p class="p1"><span class="Apple-converted-space">      </span>ctx.clearRect(0, 0, canvas.width, canvas.height);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>var L = getLayout();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var active = getActiveNotes();</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var activeColor = config.activeColor;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var scaleColor = config.scaleColor;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var rootMidi = NOTE_NAMES.indexOf(config.rootNote);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var scaleInts = SCALES[config.scaleType] || SCALES['Major'];</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var scaleMod12 = new Set(scaleInts.map(function(i){ return (rootMidi+i)%12; }));</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var FONT = '"alk-life-webfont", sans-serif';</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Белые клавиши</p>
-<p class="p1"><span class="Apple-converted-space">      </span>L.keys.filter(function(k){ return !k.isBlack; }).forEach(function(k) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var ky = L.startY + k.wIdx * L.whiteKeyH;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var kx = L.startX;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var isActive = active.has(k.midi);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var inScale = scaleMod12.has(k.midi % 12);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.fillStyle = isActive ? activeColor : (inScale ? '#ffcccc' : '#ffffff');</p>
-<p class="p1"><span class="Apple-converted-space">        </span>roundRect(ctx, kx, ky, L.whiteKeyW, L.whiteKeyH - 2, 4);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.fill();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.strokeStyle = 'rgba(0,0,0,0.12)';</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.lineWidth = 1;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.stroke();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (config.showLabels) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.fillStyle = isActive ? '#fff' : (inScale ? '#D00000' : '#999');</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.font = '11px ' + FONT;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.textAlign = 'left';</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.fillText(getNoteName(k.midi), kx + L.whiteKeyW - 28, ky + L.whiteKeyH / 2 + 4);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Чёрные клавиши</p>
-<p class="p1"><span class="Apple-converted-space">      </span>L.keys.filter(function(k){ return k.isBlack; }).forEach(function(k) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var ky = L.startY + k.wIdx * L.whiteKeyH + L.whiteKeyH - L.blackKeyH / 2;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var kx = L.startX;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var isActive = active.has(k.midi);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>var inScale = scaleMod12.has(k.midi % 12);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.fillStyle = isActive ? activeColor : (inScale ? '#990000' : '#1a1a1a');</p>
-<p class="p1"><span class="Apple-converted-space">        </span>roundRect(ctx, kx, ky, L.blackKeyW, L.blackKeyH, 3);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>ctx.fill();</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (config.showLabels) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.fillStyle = '#fff';</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.font = '9px ' + FONT;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.textAlign = 'left';</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.fillText(getNoteName(k.midi), kx + L.blackKeyW - 24, ky + L.blackKeyH / 2 + 3);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>});</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>// Аккорд справа</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var chordData = detectChord(active);</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var infoX = L.startX + L.whiteKeyW + 20;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>var infoW = canvas.width - infoX - 20;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>if (infoW &gt; 60) {</p>
-<p class="p1"><span class="Apple-converted-space">        </span>if (chordData &amp;&amp; chordData.name) {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.fillStyle = activeColor;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.font = 'bold 36px ' + FONT;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.textAlign = 'center';</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>// Перенос длинного названия</p>
-<p class="p1"><span class="Apple-converted-space">          </span>var cx = infoX + infoW / 2;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.fillText(chordData.name, cx, canvas.height / 2 - 30);</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">          </span>if (chordData.intervals &amp;&amp; chordData.intervals.length &gt; 0) {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>ctx.fillStyle = '#888';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>ctx.font = '12px ' + FONT;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>var iNames = chordData.intervals</p>
-<p class="p1"><span class="Apple-converted-space">              </span>.map(function(i){ return INTERVAL_NAMES[i] || i; })</p>
-<p class="p1"><span class="Apple-converted-space">              </span>.join(' • ');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>// Перенос если длинный</p>
-<p class="p1"><span class="Apple-converted-space">            </span>var words = iNames.split(' • ');</p>
-<p class="p1"><span class="Apple-converted-space">            </span>var line = '';</p>
-<p class="p1"><span class="Apple-converted-space">            </span>var lineY = canvas.height / 2 + 10;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>words.forEach(function(w) {</p>
-<p class="p1"><span class="Apple-converted-space">              </span>var test = line + (line ? ' • ' : '') + w;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>if (ctx.measureText(test).width &gt; infoW - 10 &amp;&amp; line) {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>ctx.fillText(line, cx, lineY);</p>
-<p class="p1"><span class="Apple-converted-space">                </span>line = w;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>lineY += 18;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">                </span>line = test;</p>
-<p class="p1"><span class="Apple-converted-space">              </span>}</p>
-<p class="p1"><span class="Apple-converted-space">            </span>});</p>
-<p class="p1"><span class="Apple-converted-space">            </span>if (line) ctx.fillText(line, cx, lineY);</p>
-<p class="p1"><span class="Apple-converted-space">          </span>}</p>
-<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.fillStyle = '#aaa';</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.font = '13px ' + FONT;</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.textAlign = 'center';</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.fillText('Нажмите', infoX + infoW/2, canvas.height/2 - 10);</p>
-<p class="p1"><span class="Apple-converted-space">          </span>ctx.fillText('клавишу', infoX + infoW/2, canvas.height/2 + 10);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p1"><span class="Apple-converted-space">      </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">      </span>requestAnimationFrame(draw);</p>
-<p class="p1"><span class="Apple-converted-space">    </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>requestAnimationFrame(draw);</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+  <div class="tool-canvas-area">
+    <canvas id="canvas"></canvas>
+  </div>
+  <script>
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    var config = {
+      rootNote:    'Do',
+      scaleType:   'Major',
+      octaves:     2,
+      showLabels:  true,
+      activeColor: '#DC0000',
+      scaleColor:  '#FFFFFF'
+    };
+
+    var NOTE_NAMES = ['Do','Do#','Re','Re#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'];
+
+    var SCALES = {
+      'Major':           [0,2,4,5,7,9,11],
+      'Natural Minor':   [0,2,3,5,7,8,10],
+      'Harmonic Minor':  [0,2,3,5,7,8,11],
+      'Melodic Minor':   [0,2,3,5,7,9,11],
+      'Dorian':          [0,2,3,5,7,9,10],
+      'Phrygian':        [0,1,3,5,7,8,10],
+      'Lydian':          [0,2,4,6,7,9,11],
+      'Mixolydian':      [0,2,4,5,7,9,10],
+      'Locrian':         [0,1,3,5,6,8,10],
+      'Pentatonic Major':[0,2,4,7,9],
+      'Pentatonic Minor':[0,3,5,7,10],
+      'Blues':           [0,3,5,6,7,10],
+      'Whole Tone':      [0,2,4,6,8,10],
+      'Chromatic':       [0,1,2,3,4,5,6,7,8,9,10,11]
+    };
+
+    var CHORD_INTERVALS = [
+      { name: ' Maj',  intervals: [0,4,7] },
+      { name: ' min',  intervals: [0,3,7] },
+      { name: ' dim',  intervals: [0,3,6] },
+      { name: ' aug',  intervals: [0,4,8] },
+      { name: ' sus2', intervals: [0,2,7] },
+      { name: ' sus4', intervals: [0,5,7] },
+      { name: ' Maj7', intervals: [0,4,7,11] },
+      { name: ' m7',   intervals: [0,3,7,10] },
+      { name: ' 7',    intervals: [0,4,7,10] },
+      { name: ' m7b5', intervals: [0,3,6,10] },
+      { name: ' dim7', intervals: [0,3,6,9] },
+      { name: ' Maj9', intervals: [0,4,7,11,14] },
+      { name: ' m9',   intervals: [0,3,7,10,14] },
+      { name: ' 9',    intervals: [0,4,7,10,14] },
+      { name: ' add9', intervals: [0,4,7,14] },
+      { name: ' 6',    intervals: [0,4,7,9] },
+      { name: ' m6',   intervals: [0,3,7,9] }
+    ];
+
+    var INTERVAL_NAMES = {
+      0:'Прима', 1:'б.2', 2:'м.2', 3:'м.3', 4:'б.3',
+      5:'ч.4', 6:'ум.5', 7:'ч.5', 8:'ув.5',
+      9:'б.6', 10:'м.7', 11:'б.7', 14:'б.9'
+    };
+
+    function getNoteName(midi) { return NOTE_NAMES[midi % 12]; }
+
+    function detectChord(activeSet) {
+      if (activeSet.size === 0) return null;
+      if (activeSet.size === 1) return { name: getNoteName(Array.from(activeSet)[0]), intervals: [0] };
+      var notes = Array.from(activeSet).sort(function(a,b){ return a-b; });
+      if (activeSet.size === 2) {
+        var interval = (notes[1] - notes[0]) % 12;
+        if (interval === 7) return { name: getNoteName(notes[0]) + '5', intervals: [0,7] };
+        return { name: getNoteName(notes[0]) + '+' + getNoteName(notes[1]), intervals: [0,interval] };
+      }
+      for (var i = 0; i < notes.length; i++) {
+        var root = notes[i];
+        var rootName = getNoteName(root);
+        var intsMod = Array.from(new Set(notes.map(function(n){ return (n-root+120)%12; }))).sort(function(a,b){return a-b;});
+        for (var c = 0; c < CHORD_INTERVALS.length; c++) {
+          var chord = CHORD_INTERVALS[c];
+          var cMod = Array.from(new Set(chord.intervals.map(function(x){ return x%12; }))).sort(function(a,b){return a-b;});
+          if (intsMod.length === cMod.length && intsMod.every(function(v,idx){ return v===cMod[idx]; })) {
+            var name = rootName + chord.name;
+            if (notes[0] !== root) name += '/' + getNoteName(notes[0]);
+            return { name: name, intervals: chord.intervals };
+          }
+        }
+      }
+      return { name: notes.map(getNoteName).join(', '), intervals: [] };
+    }
+
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var activeOscillators = new Map();
+
+    function midiToFreq(midi) { return 440 * Math.pow(2, (midi-69)/12); }
+
+    function playNote(midi) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (activeOscillators.has(midi)) return;
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = midiToFreq(midi);
+      gain.gain.setValueAtTime(0, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.05, audioCtx.currentTime + 2.0);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      activeOscillators.set(midi, { osc: osc, gain: gain });
+    }
+
+    function stopNote(midi) {
+      var s = activeOscillators.get(midi);
+      if (s) {
+        s.gain.gain.cancelScheduledValues(audioCtx.currentTime);
+        s.gain.gain.setValueAtTime(s.gain.gain.value, audioCtx.currentTime);
+        s.gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+        s.osc.stop(audioCtx.currentTime + 0.1);
+        activeOscillators.delete(midi);
+      }
+    }
+
+    var heldNotes = new Set();
+    var sustainedNotes = new Set();
+    var sustainPedal = false;
+
+    function addNote(midi) {
+      if (!heldNotes.has(midi)) { heldNotes.add(midi); playNote(midi); }
+    }
+    function removeNote(midi) {
+      if (heldNotes.has(midi)) {
+        heldNotes.delete(midi);
+        if (!sustainPedal) stopNote(midi);
+        else sustainedNotes.add(midi);
+      }
+    }
+    function getActiveNotes() { return new Set([...heldNotes, ...sustainedNotes]); }
+
+    if (navigator.requestMIDIAccess) {
+      navigator.requestMIDIAccess().then(function(access) {
+        access.inputs.forEach(function(input) {
+          input.onmidimessage = function(msg) {
+            var cmd = msg.data[0], note = msg.data[1], vel = msg.data[2] || 0;
+            if (cmd === 144 && vel > 0) addNote(note);
+            else if (cmd === 128 || (cmd === 144 && vel === 0)) removeNote(note);
+            else if (cmd === 176 && note === 64) {
+              sustainPedal = vel > 63;
+              if (!sustainPedal) {
+                sustainedNotes.forEach(function(n) { if (!heldNotes.has(n)) stopNote(n); });
+                sustainedNotes.clear();
+              }
+            }
+          };
+        });
+      }).catch(function(){});
+    }
+
+    var START_MIDI = 48;
+    var BLACK_NOTES = new Set([1,3,6,8,10]);
+
+    function getKeys(octaves) {
+      var total = octaves * 12;
+      var whites = [], blacks = [];
+      var wIdx = 0;
+      for (var i = 0; i < total; i++) {
+        var midi = START_MIDI + i;
+        var noteInOct = midi % 12;
+        if (!BLACK_NOTES.has(noteInOct)) {
+          whites.push({ midi: midi, isBlack: false, wIdx: wIdx });
+          wIdx++;
+        }
+      }
+      var curWhite = 0;
+      for (var i = 0; i < total; i++) {
+        var midi = START_MIDI + i;
+        var noteInOct = midi % 12;
+        if (BLACK_NOTES.has(noteInOct)) {
+          blacks.push({ midi: midi, isBlack: true, wIdx: curWhite - 1 });
+        } else {
+          curWhite++;
+        }
+      }
+      return { keys: whites.concat(blacks), totalWhite: wIdx };
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x+r, y);
+      ctx.lineTo(x+w-r, y);
+      ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+      ctx.lineTo(x+w, y+h-r);
+      ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+      ctx.lineTo(x+r, y+h);
+      ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+      ctx.lineTo(x, y+r);
+      ctx.quadraticCurveTo(x, y, x+r, y);
+      ctx.closePath();
+    }
+
+    function getLayout() {
+      var data = getKeys(config.octaves);
+      var totalWhite = data.totalWhite;
+      var padding = 20;
+      var keyboardH = canvas.height - padding * 2;
+      var whiteKeyH = keyboardH / totalWhite;
+      var whiteKeyW = Math.min(canvas.width * 0.55, 180);
+      var blackKeyW = whiteKeyW * 0.6;
+      var blackKeyH = whiteKeyH * 0.6;
+      return {
+        keys: data.keys,
+        totalWhite: totalWhite,
+        whiteKeyW: whiteKeyW,
+        whiteKeyH: whiteKeyH,
+        blackKeyW: blackKeyW,
+        blackKeyH: blackKeyH,
+        startX: padding,
+        startY: padding
+      };
+    }
+
+    function getMidiFromPos(x, y) {
+      var L = getLayout();
+      var blacks = L.keys.filter(function(k){ return k.isBlack; });
+      for (var i = 0; i < blacks.length; i++) {
+        var k = blacks[i];
+        var ky = L.startY + k.wIdx * L.whiteKeyH + L.whiteKeyH - L.blackKeyH / 2;
+        if (x >= L.startX && x <= L.startX + L.blackKeyW &&
+            y >= ky && y <= ky + L.blackKeyH) return k.midi;
+      }
+      if (x >= L.startX && x <= L.startX + L.whiteKeyW) {
+        var wIdx = Math.floor((y - L.startY) / L.whiteKeyH);
+        var whites = L.keys.filter(function(k){ return !k.isBlack; });
+        var wk = whites.find(function(k){ return k.wIdx === wIdx; });
+        return wk ? wk.midi : null;
+      }
+      return null;
+    }
+
+    var activeMouseKey = null;
+
+    function getPos(e) {
+      var rect = canvas.getBoundingClientRect();
+      var scaleX = canvas.width / rect.width;
+      var scaleY = canvas.height / rect.height;
+      var touch = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]);
+      var cx = touch ? touch.clientX : e.clientX;
+      var cy = touch ? touch.clientY : e.clientY;
+      return { x: (cx - rect.left) * scaleX, y: (cy - rect.top) * scaleY };
+    }
+
+    function handleDown(e) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      var pos = getPos(e);
+      var midi = getMidiFromPos(pos.x, pos.y);
+      if (midi !== null) { activeMouseKey = midi; addNote(midi); }
+    }
+    function handleMove(e) {
+      if (activeMouseKey === null) return;
+      var pos = getPos(e);
+      var midi = getMidiFromPos(pos.x, pos.y);
+      if (midi !== activeMouseKey) {
+        removeNote(activeMouseKey);
+        if (midi !== null) { addNote(midi); activeMouseKey = midi; }
+        else activeMouseKey = null;
+      }
+    }
+    function handleUp() {
+      if (activeMouseKey !== null) { removeNote(activeMouseKey); activeMouseKey = null; }
+    }
+
+    canvas.addEventListener('mousedown', handleDown);
+    canvas.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup', handleUp);
+    canvas.addEventListener('touchstart', function(e){ e.preventDefault(); handleDown(e); }, { passive: false });
+    canvas.addEventListener('touchmove',  function(e){ e.preventDefault(); handleMove(e); }, { passive: false });
+    window.addEventListener('touchend', handleUp);
+
+    var QWERTY_MAP = {
+      'q':48,'z':49,'s':50,'e':51,'d':52,'f':53,'t':54,
+      'g':55,'y':56,'h':57,'u':58,'j':59,'k':60,'o':61,
+      'l':62,'p':63,'m':64
+    };
+    window.addEventListener('keydown', function(e) {
+      if (e.repeat) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      var midi = QWERTY_MAP[e.key.toLowerCase()];
+      if (midi) addNote(midi);
+    });
+    window.addEventListener('keyup', function(e) {
+      var midi = QWERTY_MAP[e.key.toLowerCase()];
+      if (midi) removeNote(midi);
+    });
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      var L = getLayout();
+      var active = getActiveNotes();
+      var activeColor = config.activeColor;
+      var rootMidi = NOTE_NAMES.indexOf(config.rootNote);
+      var scaleInts = SCALES[config.scaleType] || SCALES['Major'];
+      var scaleMod12 = new Set(scaleInts.map(function(i){ return (rootMidi+i)%12; }));
+      var FONT = '"alk-life-webfont", sans-serif';
+
+      L.keys.filter(function(k){ return !k.isBlack; }).forEach(function(k) {
+        var ky = L.startY + k.wIdx * L.whiteKeyH;
+        var isActive = active.has(k.midi);
+        var inScale = scaleMod12.has(k.midi % 12);
+        ctx.fillStyle = isActive ? activeColor : (inScale ? '#ffcccc' : '#ffffff');
+        roundRect(ctx, L.startX, ky, L.whiteKeyW, L.whiteKeyH - 2, 4);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(0,0,0,0.12)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        if (config.showLabels) {
+          ctx.fillStyle = isActive ? '#fff' : (inScale ? '#D00000' : '#999');
+          ctx.font = '11px ' + FONT;
+          ctx.textAlign = 'left';
+          ctx.fillText(getNoteName(k.midi), L.startX + L.whiteKeyW - 28, ky + L.whiteKeyH / 2 + 4);
+        }
+      });
+
+      L.keys.filter(function(k){ return k.isBlack; }).forEach(function(k) {
+        var ky = L.startY + k.wIdx * L.whiteKeyH + L.whiteKeyH - L.blackKeyH / 2;
+        var isActive = active.has(k.midi);
+        var inScale = scaleMod12.has(k.midi % 12);
+        ctx.fillStyle = isActive ? activeColor : (inScale ? '#990000' : '#1a1a1a');
+        roundRect(ctx, L.startX, ky, L.blackKeyW, L.blackKeyH, 3);
+        ctx.fill();
+        if (config.showLabels) {
+          ctx.fillStyle = '#fff';
+          ctx.font = '9px ' + FONT;
+          ctx.textAlign = 'left';
+          ctx.fillText(getNoteName(k.midi), L.startX + L.blackKeyW - 24, ky + L.blackKeyH / 2 + 3);
+        }
+      });
+
+      var chordData = detectChord(active);
+      var infoX = L.startX + L.whiteKeyW + 20;
+      var infoW = canvas.width - infoX - 20;
+
+      if (infoW > 60) {
+        if (chordData && chordData.name) {
+          ctx.fillStyle = activeColor;
+          ctx.font = 'bold 36px ' + FONT;
+          ctx.textAlign = 'center';
+          var cx = infoX + infoW / 2;
+          ctx.fillText(chordData.name, cx, canvas.height / 2 - 30);
+          if (chordData.intervals && chordData.intervals.length > 0) {
+            ctx.fillStyle = '#888';
+            ctx.font = '12px ' + FONT;
+            var iNames = chordData.intervals.map(function(i){ return INTERVAL_NAMES[i] || i; }).join(' • ');
+            var words = iNames.split(' • ');
+            var line = '';
+            var lineY = canvas.height / 2 + 10;
+            words.forEach(function(w) {
+              var test = line + (line ? ' • ' : '') + w;
+              if (ctx.measureText(test).width > infoW - 10 && line) {
+                ctx.fillText(line, cx, lineY);
+                line = w;
+                lineY += 18;
+              } else {
+                line = test;
+              }
+            });
+            if (line) ctx.fillText(line, cx, lineY);
+          }
+        } else {
+          ctx.fillStyle = '#aaa';
+          ctx.font = '13px ' + FONT;
+          ctx.textAlign = 'center';
+          ctx.fillText('Нажмите клавишу', infoX + infoW/2, canvas.height/2);
+        }
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    requestAnimationFrame(draw);
+  </script>
 </body>
 </html>
